@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Демонстрація HOF</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    .panel { background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    input, button { padding: 10px; margin: 5px; font-size: 15px; border-radius: 6px; border: 1px solid #ccc; }
+    button { background: #0078ff; color: #fff; border: none; cursor: pointer; }
+    button:hover { background: #005fcc; }
+    #out { background: #111; color: #0f0; padding: 15px; border-radius: 8px; min-height: 100px; white-space: pre-wrap; font-family: Consolas; }
+  </style>
+</head>
+<body>
+
+<h1>Бібліотека функцій вищого порядку — Інтерактивна демонстрація</h1>
+
+<div class="panel">
+  <label>Введіть числа через кому:</label><br>
+  <input id="inputData" placeholder="наприклад: 1,2,3,4,5" style="width:300px">
+  <br>
+  <button onclick="runMap()">Удвоїти (map)</button>
+  <button onclick="runFilter()">Залишити парні (filter)</button>
+  <button onclick="runReduce()">Сума (reduce)</button>
+  <button onclick="runChain()">Цепочка (map → filter → reduce)</button>
+</div>
+
+<div class="panel">
+  <h3>Результат</h3>
+  <div id="out">Введіть дані та натисніть кнопку</div>
+</div>
+
+<script src="hof.js"></script>
+<script>
+  const out = document.getElementById('out');
+
+  const getNums = () =>
+    document.getElementById('inputData').value
+      .split(',')
+      .map(x => Number(x.trim()))
+      .filter(x => !isNaN(x));
+
+  function runMap() {
+    const nums = getNums();
+    out.textContent = JSON.stringify(myMap(x => x * 2, nums));
+  }
+
+  function runFilter() {
+    const nums = getNums();
+    out.textContent = JSON.stringify(myFilter(x => x % 2 === 0, nums));
+  }
+
+  function runReduce() {
+    const nums = getNums();
+    out.textContent = myReduce((a, b) => a + b, 0, nums);
+  }
+
+  function runChain() {
+    const nums = getNums();
+    const result = createChain(nums)
+      .map(x => x * 2)
+      .filter(x => x % 2 === 0)
+      .reduce((a, b) => a + b, 0)
+      .value();
+    out.textContent = result;
+  }
+</script>
+
+</body>
+</html>
